@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 from termcolor import colored
 import re
 import subprocess
+import time
 
 def print_banner():
     banner = """
@@ -54,10 +55,30 @@ def collect_urls_from_wayback(domain):
         domain = re.sub(r'https?://', '', domain)
         print(colored(f"[*] Running waybackurls for domain: {domain}", "cyan"))
 
-        result = subprocess.run(["waybackurls", domain], capture_output=True, text=True, timeout=60)
-        print(colored(f"[*] waybackurls command output: {result.stdout}", "cyan"))
+        # Start the waybackurls command with a 10-minute timeout
+        start_time = time.time()
+        process = subprocess.Popen(["waybackurls", domain], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        urls = result.stdout.splitlines()
+        # Check if the process has completed within 60 seconds
+        while True:
+            if process.poll() is not None:
+                break
+            if time.time() - start_time >= 60:
+                print(colored("[*] This might take some time due to the size of the website or internet connection issues.", "yellow"))
+                break
+            time.sleep(1)
+
+        # Wait for the process to complete or timeout after 10 minutes
+        try:
+            stdout, stderr = process.communicate(timeout=600)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            stdout, stderr = process.communicate()
+            print(colored(f"[!] waybackurls command timed out after 10 minutes.", "yellow"))
+
+        print(colored(f"[*] waybackurls command output: {stdout}", "cyan"))
+
+        urls = stdout.splitlines()
 
         # Filter URLs to keep only those with relevant parameters
         filtered_urls = {}
