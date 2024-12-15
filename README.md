@@ -69,7 +69,7 @@ OpenRedirectScan is an advanced automated tool designed to detect open redirect 
 ### Run the Tool
 
 ```sh
-python open_redirect_scan.py
+python openredirects.py
 ```
 
 ### Follow the Prompts
