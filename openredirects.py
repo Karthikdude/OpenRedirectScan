@@ -10,7 +10,7 @@ import subprocess
 def print_banner():
     banner = """
 =============================================
-    Advanced Open Redirect Finder | by Python 3.x
+    Advanced Open Redirect Finder | by Karthik S Sathyan
 =============================================
 """
     print(colored(banner, "cyan"))
