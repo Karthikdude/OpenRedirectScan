@@ -114,7 +114,6 @@ python open_redirect_scan.py
 ## Output
 
 - **Live Testing Output**: During execution, the tool provides real-time feedback in the terminal. Vulnerable URLs are highlighted for immediate attention.
-- **Result File**: After completion, all detected vulnerabilities are saved in a structured file (`results.txt`) for further analysis.
 
 ---
 
