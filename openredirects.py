@@ -10,9 +10,9 @@ import time
 
 def print_banner():
     banner = """
-=============================================
-    Advanced Open Redirect Finder | by Karthik S Sathyan
-=============================================
+=======================================================
+ Advanced Open Redirect Finder | by Karthik S Sathyan
+=======================================================
 """
     print(colored(banner, "cyan"))
 
@@ -20,7 +20,7 @@ def check_redirect(base_url, payload):
     """Checks if a payload causes an open redirect vulnerability."""
     try:
         test_url = urljoin(base_url, payload)
-        print(colored(f"[*] Checking URL: {test_url}", "blue"))
+        print(colored(f"[*] Testing: {test_url}", "blue"))
         response = requests.get(test_url, allow_redirects=True, timeout=5)
 
         status_code = response.status_code
@@ -82,13 +82,15 @@ def collect_urls_from_wayback(domain):
 
         urls = stdout.splitlines()
 
-        # Filter URLs to keep only those with relevant parameters
+        # Filter URLs to keep only those with relevant parameters and ignore "login" and "page"
         filtered_urls = {}
         for url in urls:
+            if "login" in url or "page" in url:
+                continue
             parsed_url = urlparse(url)
             parameters = re.findall(r'(\w+)=', parsed_url.query)
             for param in parameters:
-                if param in ["redirect", "url", "next", "continue", "page"]:
+                if param in ["redirect", "url", "next", "continue"]:
                     if param not in filtered_urls:
                         filtered_urls[param] = []
                     if len(filtered_urls[param]) < 2:  # Keep only 1 or 2 URLs per parameter
