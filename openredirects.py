@@ -1,7 +1,7 @@
 import requests
 import sys
 import os
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse, urljoin, parse_qsl, urlencode, urlunparse
 from concurrent.futures import ThreadPoolExecutor
 from termcolor import colored
 import re
@@ -21,7 +21,7 @@ def check_redirect(base_url, payload):
     try:
         test_url = urljoin(base_url, payload)
         print(colored(f"[*] Checking URL: {test_url}", "blue"))
-        response = requests.get(test_url, allow_redirects=False, timeout=5)
+        response = requests.get(test_url, allow_redirects=True, timeout=5)
 
         status_code = response.status_code
         status_message = f"[*] Response Status Code: {status_code}"
@@ -29,12 +29,14 @@ def check_redirect(base_url, payload):
             status_message = status_message.replace("200", colored("200", "red"))
         print(colored(status_message, "blue"))
 
-        if response.status_code in [301, 302]:
-            location = response.headers.get("Location", "")
-            print(colored(f"[*] Location Header: {location}", "blue"))
-            if urlparse(location).netloc and urlparse(location).netloc != urlparse(base_url).netloc:
-                print(colored(f"[*] Redirect detected to different domain: {location}", "blue"))
-                return True, location
+        if response.history:
+            locations = " --> ".join(str(r.url) for r in response.history)
+            print(colored(f"[*] Redirect chain: {locations}", "blue"))
+            final_url = response.url
+            if "google.com" in final_url:
+                print(colored(f"[+] Vulnerability detected: {test_url}", "red"))
+                print(colored(f"[+] Verified: {final_url} ✔️", "green"))
+                return True, final_url
         return False, None
     except Exception as e:
         print(colored(f"[!] Error checking redirect: {e}", "yellow"))
@@ -147,7 +149,6 @@ def main():
                     is_vulnerable, location = check_redirect(test_url, payload)
                     if is_vulnerable:
                         results.append((test_url, payload, location))
-                        print(colored(f"[+] Vulnerability detected: {test_url} -> {location}", "red"))
 
         # Use ThreadPoolExecutor for concurrent scanning
         with ThreadPoolExecutor(max_workers=10) as executor:
