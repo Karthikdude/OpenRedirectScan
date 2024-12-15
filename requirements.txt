@@ -1,0 +1,4 @@
+requests
+termcolor
+waybackurls
+beautifulsoup4
