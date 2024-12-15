@@ -45,7 +45,7 @@ OpenRedirectScan is an advanced automated tool designed to detect open redirect 
 
 1. **Clone the Repository**:
    ```sh
-   git clone https://github.com/yourusername/OpenRedirectScan.git
+   git clone https://github.com/Karthikdude/OpenRedirectScan
    cd OpenRedirectScan
    ```
 
@@ -63,7 +63,7 @@ OpenRedirectScan is an advanced automated tool designed to detect open redirect 
 
 ### Prepare Payloads
 
-- Create a file named `openredirectPayloads.txt` in the same directory as the script.
+- Create a file named `openredirectPayloads.txt` in the same directory as txt or use default payloads .
 - Add your custom payloads to this file, one per line.
 
 ### Run the Tool
@@ -94,15 +94,6 @@ python open_redirect_scan.py
 ## Output
 
 - **Live Testing Output**: The tool provides real-time feedback on the testing process, highlighting vulnerable URLs in red and potential issues in yellow.
-- **Detailed Reporting**: The results of the scan are saved to `results.txt`, including the URL, payload, and redirect location for each vulnerability detected.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit issues and enhancement requests.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
