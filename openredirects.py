@@ -85,7 +85,7 @@ def collect_urls_from_wayback(domain):
         # Filter URLs to keep only those with relevant parameters and ignore "login" and "page"
         filtered_urls = {}
         for url in urls:
-            if "login" in url or "page" in url:
+            if "login" in url or "wp-json" in url or "wp-content" in url or "page" in url:
                 continue
             parsed_url = urlparse(url)
             parameters = re.findall(r'(\w+)=', parsed_url.query)
